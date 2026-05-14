@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preservação de Evidências | Moreira Advogados</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #2980b9;
+            --bg: #f8f9fa;
+            --text: #333;
+            --border: #bdc3c7;
+            --alert: #e74c3c;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px; margin: 0 auto; background: #fff; padding: 40px;
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 { font-size: 1.8rem; color: var(--primary); margin: 0 0 5px 0; font-weight: 600; }
+        p.subtitle { color: #7f8c8d; margin-top: 0; margin-bottom: 30px; font-size: 1.05rem; }
+        
+        /* Tutorial Colapsável (Writing UIX: Foco na Ação) */
+        details.tutorial-box {
+            background: #fdfefe; border: 1px solid var(--border); border-left: 4px solid var(--secondary);
+            border-radius: 8px; margin-bottom: 30px; transition: all 0.3s ease;
+        }
+        details.tutorial-box summary {
+            padding: 15px 20px; font-size: 1.05rem; font-weight: 600; color: var(--primary);
+            cursor: pointer; list-style: none; outline: none; user-select: none;
+        }
+        details.tutorial-box summary::-webkit-details-marker { display: none; }
+        details.tutorial-box summary::after {
+            content: '▼'; float: right; color: var(--secondary); font-size: 0.9em; transition: transform 0.3s ease;
+        }
+        details[open].tutorial-box summary::after { transform: rotate(180deg); }
+        .tutorial-content { padding: 0 20px 20px 20px; border-top: 1px solid #f0f0f0; margin-top: 5px; }
+
+        .tutorial-step { margin: 20px 0 10px 0; }
+        .tutorial-step h3 { font-size: 1rem; color: var(--secondary); margin: 0 0 5px 0; }
+        .tutorial-step p { margin: 0; font-size: 0.95rem; color: #555; }
+        .alert-box { 
+            background: #fdedec; border-left: 3px solid var(--alert); padding: 12px 15px; 
+            margin: 15px 0 0 0; border-radius: 4px; font-size: 0.9rem; color: #c0392b; 
+        }
+
+        /* Formulário */
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 250px; }
+        .form-group.full { flex: 100%; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; color: var(--primary); }
+        .form-group input { 
+            width: 100%; padding: 12px; border: 1px solid var(--border); 
+            border-radius: 6px; font-size: 0.95rem; box-sizing: border-box; transition: 0.3s; color: var(--text);
+        }
+        .form-group input:focus { border-color: var(--secondary); outline: none; }
+        .form-group input[readonly] { 
+            background-color: #f8f9fa; cursor: not-allowed; color: #555; 
+            border-color: #e0e0e0; font-family: monospace; font-size: 0.85rem;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; 
+            text-align: center; background-color: var(--bg); cursor: pointer; 
+            transition: all 0.3s ease; margin-top: 10px;
+        }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--secondary); background-color: #ebf5fb; }
+        .drop-zone p { margin: 0; font-size: 1.1rem; color: var(--primary); font-weight: 500;}
+        .drop-zone span { display: block; font-size: 0.9rem; color: #7f8c8d; margin-top: 5px; }
+        
+        .status-box {
+            margin-top: 25px; padding: 20px; border-radius: 8px;
+            background-color: var(--bg); border-left: 4px solid #27ae60; display: none;
+        }
+        .hash-code { font-family: monospace; background: #eef2f5; padding: 5px 10px; border-radius: 4px; word-break: break-all; color: #d35400; font-size: 0.9em; }
+        
+        .loader {
+            display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(41, 128, 185, 0.3); 
+            border-radius: 50%; border-top-color: var(--secondary); animation: spin 1s ease-in-out infinite;
+            vertical-align: middle; margin-right: 10px; display: none;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Preservação de Evidências</h1>
+        <p class="subtitle">Geração de hash local e cadeia de custódia via ICP-Brasil.</p>
+
+        <!-- Tutorial Colapsável -->
+        <details class="tutorial-box">
+            <summary>Guia Rápido: Como garantir a validade da prova</summary>
+            <div class="tutorial-content">
+                <div class="alert-box">
+                    <strong>Atenção: Prints de tela são provas frágeis.</strong> Eles perdem os metadados originais (data, origem) ao serem enviados por apps de mensagem. Use o print apenas como registro inicial e oriente a coleta correta.
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>1. Oriente o cliente (A Prova Real)</h3>
+                    <p>Peça que o cliente grave a tela do celular navegando pela conversa (mostrando o número do telefone do ofensor) ou exporte o chat em formato <code>.txt</code> direto do aplicativo.</p>
+                </div>
+                
+                <div class="tutorial-step">
+                    <h3>2. Gere o relatório (Neste Sistema)</h3>
+                    <p>Preencha os dados de forma neutra (ex: "Vídeo recebido do cliente relatando ameaça"). Arraste o arquivo original. O sistema gera a "impressão digital" (Hash SHA-256) sem enviar o arquivo para a internet.</p>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>3. Assine o documento (Validade Legal)</h3>
+                    <p>Abra o PDF gerado e assine com seu Token OAB (PJeOffice/Adobe). O carimbo do tempo da ICP-Brasil blinda a prova, garantindo sua presunção de veracidade absoluta (MP 2.200-2/2001).</p>
+                </div>
+            </div>
+        </details>
+
+        <!-- Formulário -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nomeCliente">Identificação do Cliente / Caso</label>
+                <input type="text" id="nomeCliente" placeholder="Ex: João da Silva">
+            </div>
+            <div class="form-group">
+                <label for="nomeColetor">Responsável Técnico (Imutável)</label>
+                <input type="text" id="nomeColetor" value="Amilcar Barreto de Barros Moreira | OAB/SP 349457 | contato@moreiraadvogados.com.br" readonly>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group full">
+                <label for="descricaoProva">Descrição Técnica da Evidência</label>
+                <input type="text" id="descricaoProva" placeholder="Ex: Gravação de tela do WhatsApp exportada em formato MP4.">
+            </div>
+        </div>
+
+        <div class="drop-zone" id="dropZone">
+            <p>Arraste a evidência original aqui (Vídeo, Imagem ou Texto)</p>
+            <span>Processamento local e criptografado. Nenhum dado é enviado para a rede.</span>
+            <input type="file" id="fileInput" style="display: none;">
+        </div>
+
+        <div class="status-box" id="statusBox">
+            <p><div class="loader" id="loader"></div> <strong id="statusText">Processando...</strong></p>
+            <div id="resultDetails" style="display: none; margin-top: 15px;">
+                <p><strong>Código Hash (SHA-256):</strong><br> <span class="hash-code" id="hashArquivoDisplay"></span></p>
+                <p style="color: #27ae60; font-weight: bold; margin-top: 15px;">✓ Relatório gerado. Lembre-se de assinar o PDF com seu Token OAB.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const statusBox = document.getElementById('statusBox');
+        const statusText = document.getElementById('statusText');
+        const loader = document.getElementById('loader');
+        const resultDetails = document.getElementById('resultDetails');
+        
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'); });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) processarArquivo(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) processarArquivo(e.target.files[0]);
+        });
+
+        async function gerarHash(buffer) {
+            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function processarArquivo(file) {
+            const nomeCliente = document.getElementById('nomeCliente').value.trim() || 'Não informado';
+            const nomeColetor = document.getElementById('nomeColetor').value; 
+            const descricaoProva = document.getElementById('descricaoProva').value.trim() || 'Não informada';
+
+            statusBox.style.display = 'block';
+            resultDetails.style.display = 'none';
+            loader.style.display = 'inline-block';
+            
+            try {
+                statusText.textContent = 'Calculando assinatura digital local (SHA-256)...';
+                
+                const fileBuffer = await file.arrayBuffer();
+                const hashArquivo = await gerarHash(fileBuffer);
+
+                const manifesto = {
+                    instituicao: "Moreira Advogados",
+                    responsavel_tecnico: nomeColetor,
+                    dados_coleta: {
+                        cliente_caso: nomeCliente,
+                        descricao: descricaoProva,
+                        data_processamento: new Date().toLocaleDateString('pt-BR')
+                    },
+                    arquivo_original: {
+                        nome: file.name,
+                        tamanho_bytes: file.size,
+                        hash_sha256: hashArquivo
+                    }
+                };
+
+                statusText.textContent = 'Compilando Relatório (PDF)...';
+                gerarRelatorioPDF(manifesto);
+
+                loader.style.display = 'none';
+                statusText.textContent = 'Processamento Concluído';
+                document.getElementById('hashArquivoDisplay').textContent = hashArquivo;
+                resultDetails.style.display = 'block';
+
+            } catch (error) {
+                loader.style.display = 'none';
+                statusText.textContent = 'Erro na leitura do arquivo.';
+                console.error(error);
+            }
+            fileInput.value = '';
+        }
+
+        // Função do PDF com foco em Technical UIX / Legal Design
+        function gerarRelatorioPDF(manifesto) {
+            const m = manifesto.dados_coleta;
+            const tamanhoMB = (manifesto.arquivo_original.tamanho_bytes / 1024 / 1024).toFixed(2);
+
+            var definicaoPDF = {
+                content: [
+                    { text: 'Relatório Técnico de Preservação de Evidência', style: 'header' },
+                    { text: manifesto.instituicao, style: 'subheader', margin: [0, 0, 0, 15] },
+                    { text: 'Este relatório atesta o registro criptográfico (Hash SHA-256) do arquivo digital anexado, assegurando sua integridade e imutabilidade a partir da data de processamento.', margin: [0, 0, 0, 20] },
+                    
+                    { text: '1. Contexto da Coleta', style: 'sectionTitle' },
+                    {
+                        layout: 'lightHorizontalLines',
+                        table: {
+                            widths: ['25%', '75%'],
+                            body: [
+                                ['Cliente / Caso', m.cliente_caso],
+                                ['Descrição', m.descricao],
+                                ['Responsável Técnico', manifesto.responsavel_tecnico],
+                                ['Data do Registro', m.data_processamento]
+                            ]
+                        },
+                        margin: [0, 0, 0, 15]
+                    },
+
+                    { text: '2. Dados da Evidência Original', style: 'sectionTitle' },
+                    {
+                        layout: 'lightHorizontalLines',
+                        table: {
+                            widths: ['25%', '75%'],
+                            body: [
+                                ['Arquivo', manifesto.arquivo_original.nome],
+                                ['Tamanho', `${tamanhoMB} MB`],
+                                [{text: 'Hash SHA-256', bold:true}, {text: manifesto.arquivo_original.hash_sha256, style: 'hashStyle'}]
+                            ]
+                        },
+                        margin: [0, 0, 0, 20]
+                    },
+
+                    { text: '3. Certificação Legal (ICP-Brasil)', style: 'sectionTitle' },
+                    { text: 'A garantia de não-repúdio, integridade temporal e validade autoral deste relatório é conferida exclusivamente pela assinatura digital governamental (ICP-Brasil) no rodapé ou cabeçalho deste arquivo.', margin: [0, 0, 0, 5] },
+                    {
+                        ul: [
+                            'O carimbo do tempo atrelado à assinatura certifica a existência do arquivo na data e hora oficiais.',
+                            'A assinatura digital goza de presunção de veracidade conforme Art. 10, § 1º da Medida Provisória nº 2.200-2/2001.'
+                        ],
+                        margin: [0, 0, 0, 30]
+                    },
+                    
+                    { text: 'Documento assinado digitalmente. A validade da assinatura pode ser auditada nos portais do ITI (Instituto Nacional de Tecnologia da Informação) ou em leitores PDF certificados.', style: 'assinaturaPlaceholder' }
+                ],
+                styles: {
+                    header: { fontSize: 18, bold: true, color: '#2c3e50' },
+                    subheader: { fontSize: 14, color: '#7f8c8d' },
+                    sectionTitle: { fontSize: 12, bold: true, color: '#2980b9', margin: [0, 10, 0, 10] },
+                    hashStyle: { fontSize: 10, font: 'Courier', color: '#e74c3c' },
+                    assinaturaPlaceholder: { fontSize: 9, color: '#95a5a6', alignment: 'center', margin: [0, 20, 0, 0], italics: true }
+                },
+                defaultStyle: { font: 'Helvetica', lineHeight: 1.4, fontSize: 11 }
+            };
+
+            pdfMake.createPdf(definicaoPDF).download(`preservacao_evidencia_${manifesto.arquivo_original.nome}.pdf`);
+        }
+    </script>
+</body>
+</html>

@@ -166,14 +166,23 @@
         const loader = document.getElementById('loader');
         const resultDetails = document.getElementById('resultDetails');
         
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'); });
+       dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => { 
+            e.preventDefault(); 
+            dropZone.classList.add('dragover'); 
+        });
+        
+        dropZone.addEventListener('dragleave', () => { 
+            dropZone.classList.remove('dragover'); 
+        });
+        
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
             if (e.dataTransfer.files.length) processarArquivo(e.dataTransfer.files[0]);
         });
+        
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length) processarArquivo(e.target.files[0]);
         });

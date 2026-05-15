@@ -32,7 +32,7 @@
         h1 { font-size: 1.8rem; color: var(--primary); margin: 0 0 5px 0; font-weight: 600; }
         p.subtitle { color: #7f8c8d; margin-top: 0; margin-bottom: 30px; font-size: 1.05rem; }
         
-        /* Tutorial Colapsável (Writing UIX: Foco na Ação) */
+        /* Tutorial Colapsável */
         details.tutorial-box {
             background: #fdfefe; border: 1px solid var(--border); border-left: 4px solid var(--secondary);
             border-radius: 8px; margin-bottom: 30px; transition: all 0.3s ease;
@@ -100,7 +100,6 @@
         <h1>Preservação de Evidências</h1>
         <p class="subtitle">Geração de hash local e cadeia de custódia via ICP-Brasil.</p>
 
-        <!-- Tutorial Colapsável -->
         <details class="tutorial-box">
             <summary>Guia Rápido: Como garantir a validade da prova</summary>
             <div class="tutorial-content">
@@ -125,7 +124,6 @@
             </div>
         </details>
 
-        <!-- Formulário -->
         <div class="form-row">
             <div class="form-group">
                 <label for="nomeCliente">Identificação do Cliente / Caso</label>
@@ -159,6 +157,7 @@
     </div>
 
     <script>
+        // Mapeamento dos elementos da interface
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const statusBox = document.getElementById('statusBox');
@@ -166,7 +165,8 @@
         const loader = document.getElementById('loader');
         const resultDetails = document.getElementById('resultDetails');
         
-       dropZone.addEventListener('click', () => fileInput.click());
+        // Eventos da zona de arrastar e soltar
+        dropZone.addEventListener('click', () => fileInput.click());
         
         dropZone.addEventListener('dragover', (e) => { 
             e.preventDefault(); 
@@ -183,15 +183,18 @@
             if (e.dataTransfer.files.length) processarArquivo(e.dataTransfer.files[0]);
         });
         
+        // Evento do clique manual no input invisível
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length) processarArquivo(e.target.files[0]);
         });
 
+        // Função de cálculo criptográfico
         async function gerarHash(buffer) {
             const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
             return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
+        // Fluxo principal de leitura e PDF
         async function processarArquivo(file) {
             const nomeCliente = document.getElementById('nomeCliente').value.trim() || 'Não informado';
             const nomeColetor = document.getElementById('nomeColetor').value; 
@@ -233,13 +236,14 @@
             } catch (error) {
                 loader.style.display = 'none';
                 statusText.textContent = 'Erro na leitura do arquivo.';
-                console.error(error);
+                console.error("Erro capturado:", error);
+                alert("Ocorreu um erro no processamento. Veja o console para detalhes.");
             }
-            fileInput.value = '';
+            fileInput.value = ''; // Limpa o input para permitir enviar o mesmo arquivo de novo se precisar
         }
 
-        // Função do PDF com foco em Technical UIX / Legal Design
-       function gerarRelatorioPDF(manifesto) {
+        // Geração do PDF via pdfMake
+        function gerarRelatorioPDF(manifesto) {
             const m = manifesto.dados_coleta;
             const tamanhoMB = (manifesto.arquivo_original.tamanho_bytes / 1024 / 1024).toFixed(2);
 
@@ -279,7 +283,7 @@
                     },
 
                     { text: '3. Certificação Legal (ICP-Brasil)', style: 'sectionTitle' },
-                    { text: 'A garantia de não-repúdio, integridade temporal e validade autoral deste relatório é conferida exclusivamente pela assinatura digital governamental (ICP-Brasil).', margin: [0, 0, 0, 5] },
+                    { text: 'A garantia de não-repúdio, integridade temporal e validade autoral deste relatório é conferida exclusivamente pela assinatura digital governamental (ICP-Brasil) no rodapé ou cabeçalho deste arquivo.', margin: [0, 0, 0, 5] },
                     {
                         ul: [
                             'O carimbo do tempo atrelado à assinatura certifica a existência do arquivo na data e hora oficiais.',
@@ -288,7 +292,7 @@
                         margin: [0, 0, 0, 30]
                     },
                     
-                    { text: 'Documento assinado digitalmente. A validade da assinatura pode ser auditada nos portais do ITI ou em leitores PDF certificados.', style: 'assinaturaPlaceholder' }
+                    { text: 'Documento assinado digitalmente. A validade da assinatura pode ser auditada nos portais do ITI (Instituto Nacional de Tecnologia da Informação) ou em leitores PDF certificados.', style: 'assinaturaPlaceholder' }
                 ],
                 styles: {
                     header: { fontSize: 18, bold: true, color: '#2c3e50' },
@@ -300,11 +304,7 @@
                 defaultStyle: { font: 'Helvetica', lineHeight: 1.4, fontSize: 11 }
             };
 
-            // MUDANÇA AQUI: Usamos uma promessa para garantir que o PDF seja gerado antes do download
-            const pdfDocGenerator = pdfMake.createPdf(definicaoPDF);
-            pdfDocGenerator.download(`preservacao_evidencia_${manifesto.arquivo_original.nome}.pdf`);
-        }
-
+            // Gera e força o download seguro do arquivo
             pdfMake.createPdf(definicaoPDF).download(`preservacao_evidencia_${manifesto.arquivo_original.nome}.pdf`);
         }
     </script>

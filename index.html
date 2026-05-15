@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preservação de Evidências | Moreira Advogados</title>
-    
+    <title>Preservação de Evidências | Moreira Consultoria Jurídica</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -18,33 +23,27 @@
             --alert: #e74c3c;
             --success: #27ae60;
         }
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: var(--text);
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px; margin: 0 auto; background: #fff; padding: 40px;
-            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+body { 
+            font-family: 'Google Sans', 'Google Sans Flex', 'Product Sans', sans-serif; 
+            background-color: #f4f7f6; 
+            color: var(--text); 
+            line-height: 1.6; 
+            margin: 0; 
+            padding: 20px; 
+        }        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h1 { font-size: 1.8rem; color: var(--primary); margin: 0 0 5px 0; font-weight: 600; }
+        .logo-escritorio { 
+            max-width: 180px; /* Você pode aumentar ou diminuir este valor */
+            margin-bottom: 20px; 
+            display: block; 
+        }
         p.subtitle { color: #7f8c8d; margin-top: 0; margin-bottom: 30px; font-size: 1.05rem; }
-        
-        details.tutorial-box {
-            background: #fdfefe; border: 1px solid var(--border); border-left: 4px solid var(--secondary);
-            border-radius: 8px; margin-bottom: 30px; transition: all 0.3s ease;
-        }
-        details.tutorial-box summary {
-            padding: 15px 20px; font-size: 1.05rem; font-weight: 600; color: var(--primary);
-            cursor: pointer; list-style: none; outline: none; user-select: none;
-        }
+
+        /* Tutorial Colapsável */
+        details.tutorial-box { background: #fdfefe; border: 1px solid var(--border); border-left: 4px solid var(--secondary); border-radius: 8px; margin-bottom: 30px; transition: all 0.3s ease; }
+        details.tutorial-box summary { padding: 15px 20px; font-size: 1.05rem; font-weight: 600; color: var(--primary); cursor: pointer; list-style: none; outline: none; user-select: none; }
         details.tutorial-box summary::-webkit-details-marker { display: none; }
-        details.tutorial-box summary::after {
-            content: '▼'; float: right; color: var(--secondary); font-size: 0.9em; transition: transform 0.3s ease;
-        }
+        details.tutorial-box summary::after { content: '▼'; float: right; color: var(--secondary); font-size: 0.9em; transition: transform 0.3s ease; }
         details[open].tutorial-box summary::after { transform: rotate(180deg); }
         .tutorial-content { padding: 0 20px 20px 20px; border-top: 1px solid #f0f0f0; margin-top: 5px; }
         .tutorial-step { margin: 20px 0 10px 0; }
@@ -52,6 +51,7 @@
         .tutorial-step p { margin: 0; font-size: 0.95rem; color: #555; }
         .alert-box { background: #fdedec; border-left: 3px solid var(--alert); padding: 12px 15px; margin: 15px 0 0 0; border-radius: 4px; font-size: 0.9rem; color: #c0392b; }
 
+        /* Formulários */
         .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 250px; }
         .form-group.full { flex: 100%; }
@@ -60,42 +60,21 @@
         .form-group input:focus { border-color: var(--secondary); outline: none; }
         .form-group input[readonly] { background-color: #f8f9fa; cursor: not-allowed; color: #555; border-color: #e0e0e0; font-family: monospace; font-size: 0.85rem; }
 
-        .drop-zone {
-            border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; 
-            text-align: center; background-color: var(--bg); cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
-        }
+        /* Drag and Drop */
+        .drop-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; text-align: center; background-color: var(--bg); cursor: pointer; transition: all 0.3s ease; margin-top: 10px; }
         .drop-zone:hover, .drop-zone.dragover { border-color: var(--secondary); background-color: #ebf5fb; }
         .drop-zone p { margin: 0; font-size: 1.1rem; color: var(--primary); font-weight: 500;}
         .drop-zone span { display: block; font-size: 0.9rem; color: #7f8c8d; margin-top: 5px; }
-        
-        .status-box {
-            margin-top: 25px; padding: 20px; border-radius: 8px;
-            background-color: var(--bg); border-left: 4px solid var(--success); display: none;
-        }
+
+        /* Status e Retorno */
+        .status-box { margin-top: 25px; padding: 20px; border-radius: 8px; background-color: var(--bg); border-left: 4px solid var(--success); display: none; }
         .hash-code { font-family: monospace; background: #eef2f5; padding: 5px 10px; border-radius: 4px; word-break: break-all; color: #d35400; font-size: 0.9em; }
         
-        .loader {
-            display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(41, 128, 185, 0.3); 
-            border-radius: 50%; border-top-color: var(--secondary); animation: spin 1s ease-in-out infinite;
-            vertical-align: middle; margin-right: 10px; display: none;
-        }
+        .loader { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(41, 128, 185, 0.3); border-radius: 50%; border-top-color: var(--secondary); animation: spin 1s ease-in-out infinite; vertical-align: middle; margin-right: 10px; display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Estilo do Botão de Download */
-        .btn-download {
-            display: inline-block;
-            background-color: var(--success);
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-            text-decoration: none;
-        }
+        /* Botão de Download */
+        .btn-download { display: inline-block; background-color: var(--success); color: #fff; border: none; padding: 12px 25px; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; margin-top: 20px; transition: background-color 0.3s; text-decoration: none; }
         .btn-download:hover { background-color: #219653; }
         .btn-download svg { vertical-align: middle; margin-right: 8px; }
     </style>
@@ -103,27 +82,18 @@
 <body>
 
     <div class="container">
+        <img src="logo.png" class="logo-escritorio">
+        
         <h1>Preservação de Evidências</h1>
         <p class="subtitle">Geração de hash local e cadeia de custódia via ICP-Brasil.</p>
 
         <details class="tutorial-box">
             <summary>Guia Rápido: Como garantir a validade da prova</summary>
             <div class="tutorial-content">
-                <div class="alert-box">
-                    <strong>Atenção: Prints de tela são provas frágeis.</strong> Eles perdem os metadados originais. Use o print apenas como registro inicial.
-                </div>
-                <div class="tutorial-step">
-                    <h3>1. Oriente o cliente</h3>
-                    <p>Peça que o cliente grave a tela do celular navegando pela conversa ou exporte o chat em formato <code>.txt</code> direto do aplicativo.</p>
-                </div>
-                <div class="tutorial-step">
-                    <h3>2. Gere o relatório</h3>
-                    <p>Preencha os dados e arraste o arquivo original. O sistema gera a "impressão digital" (Hash SHA-256) sem internet.</p>
-                </div>
-                <div class="tutorial-step">
-                    <h3>3. Assine o documento</h3>
-                    <p>Abra o PDF gerado e assine com seu Token OAB (PJeOffice/Adobe). A ICP-Brasil garante a presunção de veracidade (MP 2.200-2/2001).</p>
-                </div>
+                <div class="alert-box"><strong>Atenção: Prints de tela são provas frágeis.</strong> Eles perdem os metadados originais. Use o print apenas como registro inicial.</div>
+                <div class="tutorial-step"><h3>1. Oriente o cliente</h3><p>Peça que o cliente grave a tela do celular navegando pela conversa ou exporte o chat em formato <code>.txt</code> direto do aplicativo.</p></div>
+                <div class="tutorial-step"><h3>2. Gere o relatório</h3><p>Preencha os dados e arraste o arquivo original. O sistema gera a "impressão digital" (Hash SHA-256) sem internet.</p></div>
+                <div class="tutorial-step"><h3>3. Assine o documento</h3><p>Abra o PDF gerado e assine com seu Token OAB (PJeOffice/Adobe). A ICP-Brasil garante a presunção de veracidade (MP 2.200-2/2001).</p></div>
             </div>
         </details>
 
@@ -133,8 +103,8 @@
                 <input type="text" id="nomeCliente" placeholder="Ex: João da Silva">
             </div>
             <div class="form-group">
-                <label for="nomeColetor">Responsável Técnico (Imutável)</label>
-                <input type="text" id="nomeColetor" value="Amilcar Barreto de Barros Moreira | OAB/SP 349457 | contato@moreiraadvogados.com.br" readonly>
+                <label for="nomeColetor">Responsável Técnico</label>
+                <input type="text" id="nomeColetor" placeholder="Ex: Nome Completo | OAB/CPF | E-mail ou Telefone">
             </div>
         </div>
         <div class="form-row">
@@ -154,8 +124,7 @@
             <p><div class="loader" id="loader"></div> <strong id="statusText">Processando...</strong></p>
             <div id="resultDetails" style="display: none; margin-top: 15px;">
                 <p><strong>Código Hash (SHA-256):</strong><br> <span class="hash-code" id="hashArquivoDisplay"></span></p>
-                <p style="color: #27ae60; margin-top: 15px;">✓ Processamento concluído. O PDF está pronto.</p>
-                
+                <p style="color: #27ae60; margin-top: 15px; font-weight: bold;">✓ Processamento concluído. O PDF está pronto.</p>
                 <button id="btnDownload" class="btn-download">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     Baixar Relatório PDF
@@ -173,28 +142,46 @@
         const resultDetails = document.getElementById('resultDetails');
         const btnDownload = document.getElementById('btnDownload');
         
-        let manifestoAtual = null; // Armazena os dados para o clique do botão
+        let manifestoAtual = null;
 
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'); });
+        // Controle de Eventos de Tela
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        dropZone.addEventListener('dragover', (e) => { 
+            e.preventDefault(); 
+            dropZone.classList.add('dragover'); 
+        });
+
+        dropZone.addEventListener('dragleave', () => { 
+            dropZone.classList.remove('dragover'); 
+        });
+
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
-            if (e.dataTransfer.files.length) processarArquivo(e.dataTransfer.files[0]);
-        });
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length) processarArquivo(e.target.files[0]);
+            if (e.dataTransfer.files.length > 0) {
+                processarArquivo(e.dataTransfer.files[0]);
+            }
         });
 
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processarArquivo(e.target.files[0]);
+            }
+        });
+
+        // Criptografia Client-Side (Web Crypto API)
         async function gerarHash(buffer) {
             const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
             return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
+        // Processamento Central
         async function processarArquivo(file) {
             const nomeCliente = document.getElementById('nomeCliente').value.trim() || 'Não informado';
-            const nomeColetor = document.getElementById('nomeColetor').value; 
+            const nomeColetor = document.getElementById('nomeColetor').value.trim() || 'Não informado'; 
             const descricaoProva = document.getElementById('descricaoProva').value.trim() || 'Não informada';
 
             statusBox.style.display = 'block';
@@ -207,7 +194,6 @@
                 const fileBuffer = await file.arrayBuffer();
                 const hashArquivo = await gerarHash(fileBuffer);
 
-                // Prepara os dados e guarda na variável global
                 manifestoAtual = {
                     instituicao: "Moreira Advogados",
                     responsavel_tecnico: nomeColetor,
@@ -236,13 +222,14 @@
             fileInput.value = ''; 
         }
 
-        // Atrela o clique do botão à geração do PDF
+        // Gatilho de Download
         btnDownload.addEventListener('click', () => {
             if (manifestoAtual) {
                 gerarRelatorioPDF(manifestoAtual);
             }
         });
 
+        // Motor do PDF (com correção de fontes e injeção via Blob local)
         function gerarRelatorioPDF(manifesto) {
             const m = manifesto.dados_coleta;
             const tamanhoMB = (manifesto.arquivo_original.tamanho_bytes / 1024 / 1024).toFixed(2);
@@ -298,13 +285,26 @@
                     header: { fontSize: 18, bold: true, color: '#2c3e50' },
                     subheader: { fontSize: 14, color: '#7f8c8d' },
                     sectionTitle: { fontSize: 12, bold: true, color: '#2980b9', margin: [0, 10, 0, 10] },
-                    hashStyle: { fontSize: 10, font: 'Courier', color: '#e74c3c' },
+                    hashStyle: { fontSize: 10, color: '#e74c3c' }, 
                     assinaturaPlaceholder: { fontSize: 9, color: '#95a5a6', alignment: 'center', margin: [0, 20, 0, 0], italics: true }
                 },
-                defaultStyle: { font: 'Helvetica', lineHeight: 1.4, fontSize: 11 }
+                defaultStyle: { lineHeight: 1.4, fontSize: 11 } 
             };
 
-            pdfMake.createPdf(definicaoPDF).download(`preservacao_evidencia_${manifesto.arquivo_original.nome}.pdf`);
+            // Processo blindado de download para ambientes restritos e locais
+            pdfMake.createPdf(definicaoPDF).getBlob((blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `preservacao_evidencia_${manifesto.arquivo_original.nome}.pdf`;
+                
+                document.body.appendChild(a);
+                a.click(); 
+                
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            });
         }
     </script>
 </body>

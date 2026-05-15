@@ -239,7 +239,7 @@
         }
 
         // Função do PDF com foco em Technical UIX / Legal Design
-        function gerarRelatorioPDF(manifesto) {
+       function gerarRelatorioPDF(manifesto) {
             const m = manifesto.dados_coleta;
             const tamanhoMB = (manifesto.arquivo_original.tamanho_bytes / 1024 / 1024).toFixed(2);
 
@@ -279,7 +279,7 @@
                     },
 
                     { text: '3. Certificação Legal (ICP-Brasil)', style: 'sectionTitle' },
-                    { text: 'A garantia de não-repúdio, integridade temporal e validade autoral deste relatório é conferida exclusivamente pela assinatura digital governamental (ICP-Brasil) no rodapé ou cabeçalho deste arquivo.', margin: [0, 0, 0, 5] },
+                    { text: 'A garantia de não-repúdio, integridade temporal e validade autoral deste relatório é conferida exclusivamente pela assinatura digital governamental (ICP-Brasil).', margin: [0, 0, 0, 5] },
                     {
                         ul: [
                             'O carimbo do tempo atrelado à assinatura certifica a existência do arquivo na data e hora oficiais.',
@@ -288,7 +288,7 @@
                         margin: [0, 0, 0, 30]
                     },
                     
-                    { text: 'Documento assinado digitalmente. A validade da assinatura pode ser auditada nos portais do ITI (Instituto Nacional de Tecnologia da Informação) ou em leitores PDF certificados.', style: 'assinaturaPlaceholder' }
+                    { text: 'Documento assinado digitalmente. A validade da assinatura pode ser auditada nos portais do ITI ou em leitores PDF certificados.', style: 'assinaturaPlaceholder' }
                 ],
                 styles: {
                     header: { fontSize: 18, bold: true, color: '#2c3e50' },
@@ -299,6 +299,11 @@
                 },
                 defaultStyle: { font: 'Helvetica', lineHeight: 1.4, fontSize: 11 }
             };
+
+            // MUDANÇA AQUI: Usamos uma promessa para garantir que o PDF seja gerado antes do download
+            const pdfDocGenerator = pdfMake.createPdf(definicaoPDF);
+            pdfDocGenerator.download(`preservacao_evidencia_${manifesto.arquivo_original.nome}.pdf`);
+        }
 
             pdfMake.createPdf(definicaoPDF).download(`preservacao_evidencia_${manifesto.arquivo_original.nome}.pdf`);
         }
